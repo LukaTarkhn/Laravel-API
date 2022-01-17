@@ -32,26 +32,26 @@ class AuthController extends Controller
      * @throws ValidationException
      */
     public function login(): Response {
-            $attributes = request()->validate([
-                'email' => ['required', 'string', 'max:255', 'min:5'],
-                'password' => ['required', 'string', 'max:255', 'min:5'],
+        $attributes = request()->validate([
+            'email' => ['required', 'string', 'max:255', 'min:5'],
+            'password' => ['required', 'string', 'max:255', 'min:5'],
+        ]);
+
+        if (! Auth::attempt($attributes)) {
+            throw ValidationException::withMessages([
+                'incorrect' => ['The provided credentials are incorrect.'],
             ]);
-
-            if (! Auth::attempt($attributes)) {
-                throw ValidationException::withMessages([
-                    'incorrect' => ['The provided credentials are incorrect.'],
-                ]);
-            }
-            $user = User::where('email', $attributes['email'])->first();
-            $token = $user->createToken($user->name)->plainTextToken;
-
-            $response = [
-                'user' => $user,
-                'token' => $token,
-            ];
-
-            return response($response, 200);
         }
+        $user = User::where('email', $attributes['email'])->first();
+        $token = $user->createToken($user->name)->plainTextToken;
+
+        $response = [
+            'user' => $user,
+            'token' => $token,
+        ];
+
+        return response($response, 200);
+    }
 
     public function logout(): Response {
         $user = Auth::user();
