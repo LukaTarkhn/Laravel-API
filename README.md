@@ -5,7 +5,10 @@
 
 instead of running `composer install`, run the following command:
 
+on windows:
 `docker run -v %cd%:/app -it --rm composer install`
+on linux: 
+`docker run -v $(pwd):/app -it --rm composer install`
 
 ## Add an "sail" alias for docker
 
